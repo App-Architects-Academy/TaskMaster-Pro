@@ -1,0 +1,72 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  dueDate     DateTime?
+  title       String?
+  description String?
+  isComplete  Boolean?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String?
+  description String?
+  tasks       Task[]
+}
+
+model Notification {
+  id               String                            @id @default(cuid())
+  createdAt        DateTime                          @default(now())
+  updatedAt        DateTime                          @updatedAt
+  typeField        EnumNotificationTypeField?
+  message          String?
+  recipient        String?
+  notificationType EnumNotificationNotificationType?
+}
+
+model Settings {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  settingName  String?
+  settingValue Json?
+}
+
+model User {
+  id        String             @id @default(cuid())
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  firstName String?
+  lastName  String?
+  username  String             @unique
+  email     String?            @unique
+  password  String
+  roles     Json
+  userRoles EnumUserUserRoles?
+}
+
+enum EnumNotificationTypeField {
+  Option1
+}
+
+enum EnumNotificationNotificationType {
+  Option1
+}
+
+enum EnumUserUserRoles {
+  Option1
+}
